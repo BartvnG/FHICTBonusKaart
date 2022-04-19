@@ -302,3 +302,37 @@ a:visited{
     margin-left: 280px;
     margin-top: 20px;
 }
+
+.inlogTitle{
+    font-size: 60px;
+    text-align: center;
+    font-family: "Segoe UI", Arial, sans-serif;
+    color:white;
+    margin-top: 175px;
+}
+
+#fname{
+    width: 370px;
+    margin-left: 400px;
+    height: 60px;
+    font-size: 40px;
+    margin-top: 20px;
+    border-radius: 50px;
+    border: 2px solid white;
+    padding-left: 30px;
+    color: gray;
+}
+
+#inlogbutton{
+    font-family: "Segoe UI", Arial, sans-serif;     
+    text-align: center;
+    display: inline-block;
+    width: 400px;
+    margin-left: 400px;
+    height: 60px;
+    font-size: 40px;
+    margin-top: 60px;
+    border-radius: 50px;
+    border: 2px solid  white;
+    color: white; 
+}
