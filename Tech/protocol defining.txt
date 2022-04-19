@@ -1,0 +1,14 @@
+protocol from arduino to forms:
+
+#CheckIn 09 B9 64 C2 4 25 1 % //Spaces in uid, how to fix?
+
+(Uif, streak, punten, opTijd(bool))
+
+forms app calculates points
+forms app sends calculated data back to arduino
+
+protocol from forms to arduino:
+
+#CheckIn Bart 5 35 %
+
+(name, streak, punten)
