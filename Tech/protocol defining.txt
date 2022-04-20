@@ -4,16 +4,15 @@ protocol from arduino to forms:
 
 //Use '\n' to seperate data instead of space
 //This allows the forms app to use readline instead of readChar
+//The C# program holds all data, so no streak nor point information is sent
 // message would look like this:
 #\n
 CheckIn\n
 09 B9 64 C2\n
-4\n
-25\n
 1\n
 %
 
-(Uif, streak, punten, opTijd(bool))
+(Uid, opTijd(bool))
 
 forms app calculates points
 forms app sends calculated data back to arduino
@@ -23,3 +22,4 @@ protocol from forms to arduino:
 #CheckIn Bart 5 35 %
 
 (name, streak, punten)
+This info will be displayed on the lcd
