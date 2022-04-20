@@ -1,6 +1,17 @@
 protocol from arduino to forms:
 
-#CheckIn 09 B9 64 C2 4 25 1 % //Spaces in uid, how to fix?
+#CheckIn 09 B9 64 C2 4 25 1 % //Spaces in uid, how to fix? 
+
+//Use '\n' to seperate data instead of space
+//This allows the forms app to use readline instead of readChar
+// message would look like this:
+#\n
+CheckIn\n
+09 B9 64 C2\n
+4\n
+25\n
+1\n
+%
 
 (Uif, streak, punten, opTijd(bool))
 
