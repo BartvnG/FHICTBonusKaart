@@ -23,6 +23,7 @@ bool communicatieGestart = false;
 bool checkInProtocol = false;
 const char  protocolStartChar = '#';
 const char  protocolEndChar  = '%';
+bool test = false;
 
 int dataIndex = 0;
 String naam = "";
@@ -56,10 +57,9 @@ void rgLedWrite(int rVal, int gVal)
 
 void UpdateInterface(String name, bool opTijd, int streak, int punten) {
   lastDataShown = millis();
-  String streakString = String(streak);
-  lcd.print(name + ": " + punten + " punten");
+  lcd.print(name);
   lcd.setCursor(0,1);
-  lcd.print("Streak: " + streakString);
+  lcd.print("Str: " + String(streak) + " Pnt: " + punten);
   if (opTijd) {
     rgLedWrite(0, 150);
   }
@@ -130,15 +130,20 @@ void InterpretSerialInput() {
 void loop() 
 {
   InterpretSerialInput();
-  //Wipe Interface 2 seconds after displaying data
-  // if (millis() - lastDataShown >= 2000) {
-  //   lcd.clear();
-  //   rgLedWrite(0, 0);
-  //   lastUid = "replace text";
+  // if (!test) {
+  //   test = true;
+  //   Serial.println("#\nCheckIn\09 B9 64 C2\n4\n25\n1\n%\n");
   // }
 
+  //Wipe Interface 2 seconds after displaying data
+  if (millis() - lastDataShown >= 5000) {
+    lcd.clear();
+    rgLedWrite(0, 0);
+    // lastUid = "replace text";
+  }
+
   //Card reading logic
-  if (millis() - lastCardPresent >= 500) {
+  if (millis() - lastCardPresent >= 5050) {
     // Look for new cards
     if ( ! mfrc522.PICC_IsNewCardPresent()) 
     {
@@ -156,27 +161,29 @@ void loop()
     for (byte i = 0; i < mfrc522.uid.size; i++) 
     {
       uid = "";
-      Serial.print(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " ");
-      Serial.print(mfrc522.uid.uidByte[i], HEX);
+      // Serial.print(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " ");
+      // Serial.print(mfrc522.uid.uidByte[i], HEX);
       uid.concat(String(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " "));
       uid.concat(String(mfrc522.uid.uidByte[i], HEX));
     }
-    if (uid != lastUid) {
-      if (millis() / 1000 > 10) {
-        opTijd = false;
-        Serial.println("Laat");
-      }
-      else {
-        opTijd = true;
-        Serial.println("Op tijd");
-      }
-      //(to implement)
-      //Send data to the C# program
-      //Get data from the C# program
-      //Read data to the interface
-      //UpdateInterface(uid, opTijd, 4, 25);
-      lastUid = uid;
+    if (millis() / 1000 > 60) {
+      opTijd = false;
+      Serial.println("Laat");
     }
+    else {
+      opTijd = true;
+      Serial.println("Op tijd");
+    }
+    //Send data to the C# program
+    Serial.print("#\nCheckIn\n");
+    for (byte i = 0; i < mfrc522.uid.size; i++) 
+    {
+      Serial.print(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " ");
+      Serial.print(mfrc522.uid.uidByte[i], HEX);
+    }
+    Serial.print("\n");
+    Serial.print(opTijd);
+    Serial.print("\n%\n");
     lastCardPresent = millis();
   }
 }
