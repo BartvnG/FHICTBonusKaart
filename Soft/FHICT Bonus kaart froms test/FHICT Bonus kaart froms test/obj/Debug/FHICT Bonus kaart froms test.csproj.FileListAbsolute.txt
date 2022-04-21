@@ -9,3 +9,14 @@ C:\Users\bartv\source\repos\FHICT Bonus kaart froms test\FHICT Bonus kaart froms
 C:\Users\bartv\source\repos\FHICT Bonus kaart froms test\FHICT Bonus kaart froms test\obj\Debug\FHICT Bonus kaart froms test.exe
 C:\Users\bartv\source\repos\FHICT Bonus kaart froms test\FHICT Bonus kaart froms test\obj\Debug\FHICT Bonus kaart froms test.pdb
 C:\Users\bartv\source\repos\FHICT Bonus kaart froms test\FHICT Bonus kaart froms test\obj\Debug\FHICT_Bonus_kaart_froms_test.Form1.resources
+C:\Fontys retry\Proftaak Design challenge\FHICT Bonus Kaart\FHICTBonusKaart\Soft\FHICT Bonus kaart froms test\FHICT Bonus kaart froms test\bin\Debug\FHICT Bonus kaart froms test.exe.config
+C:\Fontys retry\Proftaak Design challenge\FHICT Bonus Kaart\FHICTBonusKaart\Soft\FHICT Bonus kaart froms test\FHICT Bonus kaart froms test\bin\Debug\FHICT Bonus kaart froms test.exe
+C:\Fontys retry\Proftaak Design challenge\FHICT Bonus Kaart\FHICTBonusKaart\Soft\FHICT Bonus kaart froms test\FHICT Bonus kaart froms test\bin\Debug\FHICT Bonus kaart froms test.pdb
+C:\Fontys retry\Proftaak Design challenge\FHICT Bonus Kaart\FHICTBonusKaart\Soft\FHICT Bonus kaart froms test\FHICT Bonus kaart froms test\obj\Debug\FHICT Bonus kaart froms test.csproj.AssemblyReference.cache
+C:\Fontys retry\Proftaak Design challenge\FHICT Bonus Kaart\FHICTBonusKaart\Soft\FHICT Bonus kaart froms test\FHICT Bonus kaart froms test\obj\Debug\FHICT Bonus kaart froms test.csproj.SuggestedBindingRedirects.cache
+C:\Fontys retry\Proftaak Design challenge\FHICT Bonus Kaart\FHICTBonusKaart\Soft\FHICT Bonus kaart froms test\FHICT Bonus kaart froms test\obj\Debug\FHICT_Bonus_kaart_froms_test.Form1.resources
+C:\Fontys retry\Proftaak Design challenge\FHICT Bonus Kaart\FHICTBonusKaart\Soft\FHICT Bonus kaart froms test\FHICT Bonus kaart froms test\obj\Debug\FHICT_Bonus_kaart_froms_test.Properties.Resources.resources
+C:\Fontys retry\Proftaak Design challenge\FHICT Bonus Kaart\FHICTBonusKaart\Soft\FHICT Bonus kaart froms test\FHICT Bonus kaart froms test\obj\Debug\FHICT Bonus kaart froms test.csproj.GenerateResource.cache
+C:\Fontys retry\Proftaak Design challenge\FHICT Bonus Kaart\FHICTBonusKaart\Soft\FHICT Bonus kaart froms test\FHICT Bonus kaart froms test\obj\Debug\FHICT Bonus kaart froms test.csproj.CoreCompileInputs.cache
+C:\Fontys retry\Proftaak Design challenge\FHICT Bonus Kaart\FHICTBonusKaart\Soft\FHICT Bonus kaart froms test\FHICT Bonus kaart froms test\obj\Debug\FHICT Bonus kaart froms test.exe
+C:\Fontys retry\Proftaak Design challenge\FHICT Bonus Kaart\FHICTBonusKaart\Soft\FHICT Bonus kaart froms test\FHICT Bonus kaart froms test\obj\Debug\FHICT Bonus kaart froms test.pdb

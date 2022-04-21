@@ -35,14 +35,16 @@ namespace FHICT_Bonus_kaart_froms_test
             serialPort.Open();
 
             string serialInput = "";
-            bool communacationStarted = false;
+            bool communicationStarted = false;
             bool checkInProtocol = false;
             int dataIndex = 0;
 
-            int index = 0;
+            int cardIndex = 0;
             string[] naam = { "Desmond", "Bart" };
             int[] streak = { 0, 0 };
             int[] punten = { 0, 0 };
+            bool[] checkedIn = { false, false };
+            bool startOfDay = false;
             bool opTijd = false;
 
             while (true)
@@ -54,29 +56,52 @@ namespace FHICT_Bonus_kaart_froms_test
                 serialInput = serialPort.ReadLine();
                 Console.WriteLine(serialInput);
 
-                if (serialInput == "#") { communacationStarted = true; }
+                if (serialInput == "#") { communicationStarted = true; }
 
-                if (communacationStarted)
+                if (communicationStarted)
                 {
                     if (serialInput == "%")
                     {
-                        communacationStarted = false;
+                        communicationStarted = false;
                         checkInProtocol = false;
                         dataIndex = 0;
-                        //Bereken punten
-                        //Reset streak if late
-                        if (!opTijd) { streak[index] = 0; }
-                        else { streak[index]++; }
-                        //Per 10 dagen een extra punt per dag
-                        punten[index] += ((streak[index] - (streak[index] % 10)) / 10) + 1;
-                        //Stuur terug naar arduino
-                        serialPort.Write($"#CheckIn {naam[index]} {streak[index]} {punten[index]} %");
+                        //Straf als je de vorige dag niet hebt ingecheckt
+                        if (startOfDay)
+                        {
+                            for (int i = 0; i < checkedIn.Length; i++)
+                            {
+                                if (!checkedIn[i]) { streak[i] = 0; }
+                                checkedIn[i] = false;
+                            }
+                            startOfDay = false;
+                        }
+                        else if (!checkedIn[cardIndex])
+                        {
+                            //Bereken punten
+                            //Reset streak if late
+                            if (!opTijd) { streak[cardIndex] = 0; }
+                            else
+                            {
+                                streak[cardIndex]++;
+                                //Per 10 dagen een extra punt per dag
+                                punten[cardIndex] += ((streak[cardIndex] - (streak[cardIndex] % 10)) / 10) + 1;
+                            }
+                            //Regester that the card has been checked in this day
+                            checkedIn[cardIndex] = true;
+                            //Stuur terug naar arduino
+                            serialPort.Write($"#CheckIn {naam[cardIndex]} {streak[cardIndex]} {punten[cardIndex]} %");
+                        }
                         numUpDown_Streak0.Invoke((MethodInvoker)delegate { numUpDown_Streak0.Value = streak[0]; });
                         numUpDown_Streak1.Invoke((MethodInvoker)delegate { numUpDown_Streak1.Value = streak[1]; });
                         numUpDown_TotalPoints0.Invoke((MethodInvoker)delegate { numUpDown_TotalPoints0.Value = punten[0]; });
                         numUpDown_TotalPoints1.Invoke((MethodInvoker)delegate { numUpDown_TotalPoints1.Value = punten[1]; });
                     }
-                    if (serialInput == "CheckIn")
+                    
+                    if (serialInput == "StartOfDay")
+                    {
+                        startOfDay = true;
+                    }
+                    else if (serialInput == "CheckIn")
                     {
                         checkInProtocol = true;
                     }
@@ -87,11 +112,11 @@ namespace FHICT_Bonus_kaart_froms_test
                             case 0:
                                 if (serialInput.Substring(1) == "09 B9 64 C2")
                                 {
-                                    index = 1;
+                                    cardIndex = 1;
                                 }
                                 else if (serialInput.Substring(1) == "CA 27 61 1F")
                                 {
-                                    index = 0;
+                                    cardIndex = 0;
                                 }
                                 //To implement? non Fontys cards not recognised, show error on lcd
                                 break;
