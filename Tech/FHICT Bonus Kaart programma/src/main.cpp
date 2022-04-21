@@ -174,6 +174,7 @@ void loop()
       opTijd = true;
       Serial.println("Op tijd");
     }
+    //To implement: Cards can only be scanned once per day
     //Send data to the C# program
     Serial.print("#\nCheckIn\n");
     for (byte i = 0; i < mfrc522.uid.size; i++) 
