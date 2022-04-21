@@ -11,19 +11,16 @@ int rgbPins[3] = { rPin, gPin, bPin };
 #define RST_PIN 9
 MFRC522 mfrc522(SS_PIN, RST_PIN);   // Create MFRC522 instance.
 String uid= "";
-String lastUid= "replace text";
 bool isCardPresent = false;
 
 bool opTijd;
 unsigned long lastCardPresent;
-unsigned long lastDataShown;
 
 String serialMessage = "";
 bool communicatieGestart = false;
 bool checkInProtocol = false;
 const char  protocolStartChar = '#';
 const char  protocolEndChar  = '%';
-bool test = false;
 
 int dataIndex = 0;
 String naam = "";
@@ -38,6 +35,8 @@ void setup()
   Serial.begin(9600);   // Initiate a serial communication
   SPI.begin();      // Initiate  SPI bus
   mfrc522.PCD_Init();   // Initiate MFRC522
+  //Tell C# program that it is the start of the day
+  Serial.println("#\nStartOfDay\n%\n");
   Serial.println("Approximate your card to the reader...");
   Serial.println();
   // set up the LCD's number of columns and rows:
@@ -56,7 +55,6 @@ void rgLedWrite(int rVal, int gVal)
 }
 
 void UpdateInterface(String name, bool opTijd, int streak, int punten) {
-  lastDataShown = millis();
   lcd.print(name);
   lcd.setCursor(0,1);
   lcd.print("Str: " + String(streak) + " Pnt: " + punten);
@@ -109,7 +107,6 @@ void InterpretSerialInput() {
         //Do stuff
         if (checkInProtocol) {
           UpdateInterface(naam, opTijd, streak, punten);
-          lastDataShown = millis();
           Serial.println("\nNaam: " + naam);
           Serial.print("op tijd?: ");
           Serial.println(opTijd);
@@ -130,20 +127,11 @@ void InterpretSerialInput() {
 void loop() 
 {
   InterpretSerialInput();
-  // if (!test) {
-  //   test = true;
-  //   Serial.println("#\nCheckIn\09 B9 64 C2\n4\n25\n1\n%\n");
-  // }
-
-  //Wipe Interface 2 seconds after displaying data
-  if (millis() - lastDataShown >= 5000) {
-    lcd.clear();
-    rgLedWrite(0, 0);
-    // lastUid = "replace text";
-  }
 
   //Card reading logic
-  if (millis() - lastCardPresent >= 5050) {
+  if (millis() - lastCardPresent >= 5000) {
+    lcd.clear();
+    rgLedWrite(0, 0);
     // Look for new cards
     if ( ! mfrc522.PICC_IsNewCardPresent()) 
     {
@@ -158,15 +146,22 @@ void loop()
     
     //Show UID on serial monitor
     // Serial.print("UID tag :");
+    uid = "";
     for (byte i = 0; i < mfrc522.uid.size; i++) 
     {
-      uid = "";
-      // Serial.print(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " ");
-      // Serial.print(mfrc522.uid.uidByte[i], HEX);
       uid.concat(String(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " "));
       uid.concat(String(mfrc522.uid.uidByte[i], HEX));
     }
-    if (millis() / 1000 > 60) {
+    int index = 0;
+    uid.toUpperCase();
+    if (uid.substring(1) == "09 B9 64 C2") {
+      index = 1;
+    }
+    else if (uid.substring(1) == "CA 27 61 1F") {
+      index = 0;
+    }
+    else { Serial.print("bruh"); }
+    if (millis() / 1000 > 30) {
       opTijd = false;
       Serial.println("Laat");
     }
@@ -176,15 +171,7 @@ void loop()
     }
     //To implement: Cards can only be scanned once per day
     //Send data to the C# program
-    Serial.print("#\nCheckIn\n");
-    for (byte i = 0; i < mfrc522.uid.size; i++) 
-    {
-      Serial.print(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " ");
-      Serial.print(mfrc522.uid.uidByte[i], HEX);
-    }
-    Serial.print("\n");
-    Serial.print(opTijd);
-    Serial.print("\n%\n");
+    Serial.print("#\nCheckIn\n" + uid + "\n" + opTijd + "\n%\n");
     lastCardPresent = millis();
   }
 }
