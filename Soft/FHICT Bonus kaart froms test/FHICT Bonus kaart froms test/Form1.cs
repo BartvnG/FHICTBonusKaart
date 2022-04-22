@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -24,6 +25,12 @@ namespace FHICT_Bonus_kaart_froms_test
             t = new System.Threading.Thread(InterpretSerialInput);
             t.Start();
         }
+        static void LineChanger(string newText, string docPath, int lineToWrite)
+        {
+            string[] arrLine = File.ReadAllLines(docPath);
+            arrLine[lineToWrite] = newText;
+            File.WriteAllLines(docPath, arrLine);
+        }
 
         public void InterpretSerialInput()
         {
@@ -46,6 +53,8 @@ namespace FHICT_Bonus_kaart_froms_test
             int[] punten = { 0, 0 };
             bool[] checkedIn = { false, false };
             bool opTijd = false;
+            // Set a variable to the Documents path.
+            string docPath = @"C:\Fontys retry\Proftaak Design challenge\FHICT Bonus Kaart\FHICTBonusKaart\Media\Data.txt";
 
             NumericUpDown[] streakNumUpDowns = { numUpDown_Streak0, numUpDown_Streak1 };
             NumericUpDown[] puntenNumUpDowns = { numUpDown_TotalPoints0, numUpDown_TotalPoints1 };
@@ -101,14 +110,15 @@ namespace FHICT_Bonus_kaart_froms_test
                             checkedIn[cardIndex] = true;
                             //Stuur terug naar arduino
                             serialPort.Write($"#CheckIn {naam[cardIndex]} {streak[cardIndex]} {punten[cardIndex]} %");
+                            LineChanger($"{naam[cardIndex]} {streak[cardIndex]} {punten[cardIndex]}", docPath, cardIndex);
                         }
-                        for (int i = 0; i < streakNumUpDowns.Length; i++)
-                        {
-                            streakNumUpDowns[i].Invoke((MethodInvoker)delegate { streakNumUpDowns[i].Value = streak[i]; });
-                            puntenNumUpDowns[i].Invoke((MethodInvoker)delegate { puntenNumUpDowns[i].Value = punten[i]; });
-                        }
+                        //for (int i = 0; i < streakNumUpDowns.Length; i++)
+                        //{
+                        //    streakNumUpDowns[i].Invoke((MethodInvoker)delegate { streakNumUpDowns[i].Value = streak[i]; });
+                        //    puntenNumUpDowns[i].Invoke((MethodInvoker)delegate { puntenNumUpDowns[i].Value = punten[i]; });
+                        //}
                     }
-                    
+
                     if (serialInput == "StartOfDay")
                     {
                         startOfDayProtocol = true;
