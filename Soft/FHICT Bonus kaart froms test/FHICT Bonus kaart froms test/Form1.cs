@@ -36,6 +36,7 @@ namespace FHICT_Bonus_kaart_froms_test
 
             string serialInput = "";
             bool communicationStarted = false;
+            bool startOfDayProtocol = false;
             bool checkInProtocol = false;
             int dataIndex = 0;
 
@@ -44,19 +45,26 @@ namespace FHICT_Bonus_kaart_froms_test
             int[] streak = { 0, 0 };
             int[] punten = { 0, 0 };
             bool[] checkedIn = { false, false };
-            bool startOfDay = false;
             bool opTijd = false;
+
+            NumericUpDown[] streakNumUpDowns = { numUpDown_Streak0, numUpDown_Streak1 };
+            NumericUpDown[] puntenNumUpDowns = { numUpDown_TotalPoints0, numUpDown_TotalPoints1 };
 
             while (true)
             {
-                streak[0] = Convert.ToInt32(numUpDown_Streak0.Value);
-                streak[1] = Convert.ToInt32(numUpDown_Streak1.Value);
-                punten[0] = Convert.ToInt32(numUpDown_TotalPoints0.Value);
-                punten[1] = Convert.ToInt32(numUpDown_TotalPoints1.Value);
+                for (int i = 0; i < streakNumUpDowns.Length; i++)
+                {
+                    streak[i] = Convert.ToInt32(streakNumUpDowns[i].Value);
+                    punten[i] = Convert.ToInt32(puntenNumUpDowns[i].Value);
+                }
+
                 serialInput = serialPort.ReadLine();
                 Console.WriteLine(serialInput);
 
-                if (serialInput == "#") { communicationStarted = true; }
+                if (serialInput == "#") 
+                { 
+                    communicationStarted = true; 
+                }
 
                 if (communicationStarted)
                 {
@@ -66,40 +74,44 @@ namespace FHICT_Bonus_kaart_froms_test
                         checkInProtocol = false;
                         dataIndex = 0;
                         //Straf als je de vorige dag niet hebt ingecheckt
-                        if (startOfDay)
+                        if (startOfDayProtocol)
                         {
                             for (int i = 0; i < checkedIn.Length; i++)
                             {
                                 if (!checkedIn[i]) { streak[i] = 0; }
                                 checkedIn[i] = false;
                             }
-                            startOfDay = false;
+                            startOfDayProtocol = false;
                         }
                         else if (!checkedIn[cardIndex])
                         {
                             //Bereken punten
                             //Reset streak if late
-                            if (!opTijd) { streak[cardIndex] = 0; }
+                            if (!opTijd) 
+                            { 
+                                streak[cardIndex] = 0; 
+                            }
                             else
                             {
                                 streak[cardIndex]++;
                                 //Per 10 dagen een extra punt per dag
-                                punten[cardIndex] += ((streak[cardIndex] - (streak[cardIndex] % 10)) / 10) + 1;
+                                punten[cardIndex] = streak[cardIndex] / 10 + 1;
                             }
-                            //Regester that the card has been checked in this day
+                            //Register that the card has been checked in this day
                             checkedIn[cardIndex] = true;
                             //Stuur terug naar arduino
                             serialPort.Write($"#CheckIn {naam[cardIndex]} {streak[cardIndex]} {punten[cardIndex]} %");
                         }
-                        numUpDown_Streak0.Invoke((MethodInvoker)delegate { numUpDown_Streak0.Value = streak[0]; });
-                        numUpDown_Streak1.Invoke((MethodInvoker)delegate { numUpDown_Streak1.Value = streak[1]; });
-                        numUpDown_TotalPoints0.Invoke((MethodInvoker)delegate { numUpDown_TotalPoints0.Value = punten[0]; });
-                        numUpDown_TotalPoints1.Invoke((MethodInvoker)delegate { numUpDown_TotalPoints1.Value = punten[1]; });
+                        for (int i = 0; i < streakNumUpDowns.Length; i++)
+                        {
+                            streakNumUpDowns[i].Invoke((MethodInvoker)delegate { streakNumUpDowns[i].Value = streak[i]; });
+                            puntenNumUpDowns[i].Invoke((MethodInvoker)delegate { puntenNumUpDowns[i].Value = punten[i]; });
+                        }
                     }
                     
                     if (serialInput == "StartOfDay")
                     {
-                        startOfDay = true;
+                        startOfDayProtocol = true;
                     }
                     else if (serialInput == "CheckIn")
                     {

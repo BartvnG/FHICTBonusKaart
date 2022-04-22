@@ -66,7 +66,7 @@
             this.groupBox1.Size = new System.Drawing.Size(267, 110);
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Punten Desmont";
+            this.groupBox1.Text = "Punten Desmond";
             // 
             // numUpDown_Streak0
             // 
@@ -78,7 +78,7 @@
             0});
             this.numUpDown_Streak0.Name = "numUpDown_Streak0";
             this.numUpDown_Streak0.Size = new System.Drawing.Size(120, 22);
-            this.numUpDown_Streak0.TabIndex = 0;
+            this.numUpDown_Streak0.TabIndex = 1;
             // 
             // numUpDown_TotalPoints0
             // 
@@ -136,7 +136,7 @@
             0});
             this.numUpDown_TotalPoints1.Name = "numUpDown_TotalPoints1";
             this.numUpDown_TotalPoints1.Size = new System.Drawing.Size(120, 22);
-            this.numUpDown_TotalPoints1.TabIndex = 1;
+            this.numUpDown_TotalPoints1.TabIndex = 0;
             // 
             // label3
             // 
