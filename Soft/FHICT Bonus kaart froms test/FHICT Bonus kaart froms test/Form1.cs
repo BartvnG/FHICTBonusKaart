@@ -31,13 +31,14 @@ namespace FHICT_Bonus_kaart_froms_test
             arrLine[index] = newText;
             File.WriteAllLines(docPath, arrLine);
         }
-
-        static void LineReader(string docPath, int index, ref int[] streak, ref int[] punten)
+        
+        static void ReadDataIn(string docPath, int index, ref int[] streak, ref int[] punten, ref bool[] checkedIn)
         {
-            string readLine = File.ReadAllLines(docPath)[index];
+            string readLine = File.ReadAllLines(docPath)[index - 1];
             string[] lineArr = readLine.Split(' ');
             streak[index] = Convert.ToInt32(lineArr[1]);
             punten[index] = Convert.ToInt32(lineArr[2]);
+            checkedIn[index] = Convert.ToBoolean(Convert.ToInt32(lineArr[3]));
         }
 
         public void InterpretSerialInput()
@@ -49,67 +50,58 @@ namespace FHICT_Bonus_kaart_froms_test
             };
             serialPort.Open();
 
-            string serialInput = "";
-            bool communicationStarted = false;
-            bool startOfDayProtocol = false;
-            bool checkInProtocol = false;
-            int dataIndex = 0;
-
-            int cardIndex = 0;
-            string[] naam = { "Desmond", "Bart" };
-            int[] streak = { 0, 0 };
-            int[] punten = { 0, 0 };
-            bool[] checkedIn = { false, false };
-            bool opTijd = false;
-            // Set a variable to the Documents path.
+            string[] naam = { "error", "Desmond", "Bart" };
+            int[] streak = { 0, 0, 0 };
+            int[] punten = { 0, 0, 0 };
+            bool[] checkedIn = { false, false, false };
+            // Set a variable to the data file path.
             string docPath = @"C:\Fontys retry\Proftaak Design challenge\FHICT Bonus Kaart\FHICTBonusKaart\Media\Data.txt";
 
-            NumericUpDown[] streakNumUpDowns = { numUpDown_Streak0, numUpDown_Streak1 };
-            NumericUpDown[] puntenNumUpDowns = { numUpDown_TotalPoints0, numUpDown_TotalPoints1 };
+            //Read data from txt file into local streak and point data
+            for (int i = 1; i < checkedIn.Length; i++)
+            {
+                ReadDataIn(docPath, i, ref streak, ref punten, ref checkedIn);
+            }
 
+            
             while (true)
             {
-                //Read data form txt file into local streak and point data
-                //for (int i = 0; i < streakNumUpDowns.Length; i++)
-                //{
-                //    streak[i] = Convert.ToInt32(streakNumUpDowns[i].Value);
-                //    punten[i] = Convert.ToInt32(puntenNumUpDowns[i].Value);
-                //}
-                
-
-                serialInput = serialPort.ReadLine();
+                string serialInput = serialPort.ReadLine();
                 Console.WriteLine(serialInput);
-                if (serialInput.StartsWith("#StartOfDay"))
+                if (serialInput.StartsWith("#StartOfDay%"))
                 {
-                    for (int i = 0; i < checkedIn.Length; i++)
+                    for (int i = 1; i < checkedIn.Length; i++)
                     {
                         if (!checkedIn[i]) { streak[i] = 0; }
                         checkedIn[i] = false;
+                        LineChanger($"{naam[i]} {streak[i]} {punten[i]} 0", docPath, i - 1);
                     }
                 }
                 else if (serialInput.StartsWith("#CheckIn ") && serialInput.EndsWith("%\r"))
                 {
-                    for (int i = 0; i < checkedIn.Length; i++)
-                    {
-                        LineReader(docPath, i, ref streak, ref punten);
-                    }
-                    string[] arrData = serialInput.Substring(9, serialInput.Length-11).Split('!');
+                    string[] arrData = serialInput.Substring(9, serialInput.Length - 9 - 2).Split('!');
+                    int cardIndex = 0;
                     if (arrData[0] == "09 B9 64 C2")
-                    {
-                        cardIndex = 0;
-                    }
-                    else if (arrData[0] == "CA 27 61 1F")
                     {
                         cardIndex = 1;
                     }
-                    opTijd = Convert.ToBoolean(Convert.ToInt32(arrData[1]));
-                    if (!checkedIn[cardIndex])
+                    else if (arrData[0] == "CA 27 61 1F")
+                    {
+                        cardIndex = 2;
+                    }
+                    else
+                    {
+                        cardIndex = 0;
+                        serialPort.Write("#Print error%");
+                    }
+                    bool opTijd = Convert.ToBoolean(Convert.ToInt32(arrData[1]));
+                    if (!checkedIn[cardIndex] && cardIndex != 0)
                     {
                         //Bereken punten
                         //Reset streak if late
-                        if (!opTijd) 
-                        { 
-                            streak[cardIndex] = 0; 
+                        if (!opTijd)
+                        {
+                            streak[cardIndex] = 0;
                         }
                         else
                         {
@@ -121,7 +113,12 @@ namespace FHICT_Bonus_kaart_froms_test
                         checkedIn[cardIndex] = true;
                         //Stuur terug naar arduino
                         serialPort.Write($"#CheckIn {naam[cardIndex]} {streak[cardIndex]} {punten[cardIndex]} %");
-                        LineChanger($"{naam[cardIndex]} {streak[cardIndex]} {punten[cardIndex]}", docPath, cardIndex);
+                        LineChanger($"{naam[cardIndex]} {streak[cardIndex]} {punten[cardIndex]} {Convert.ToInt32(checkedIn[cardIndex])}", docPath, cardIndex - 1);
+                    }
+                    else if (cardIndex != 0)
+                    {
+                        serialPort.Write("#Print Checked In%");
+                        serialPort.Write($"#CheckIn   {streak[cardIndex]} {punten[cardIndex]} %");
                     }
                 }
             }

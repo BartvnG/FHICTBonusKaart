@@ -1,2 +1,2 @@
-Desmond 4 7
-Bart 2 5
+Desmond 2 4 1
+Bart 6 7 1

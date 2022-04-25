@@ -90,7 +90,7 @@
             0});
             this.numUpDown_TotalPoints0.Name = "numUpDown_TotalPoints0";
             this.numUpDown_TotalPoints0.Size = new System.Drawing.Size(120, 22);
-            this.numUpDown_TotalPoints0.TabIndex = 0;
+            this.numUpDown_TotalPoints0.TabIndex = 1;
             // 
             // label2
             // 
@@ -124,7 +124,7 @@
             0});
             this.numUpDown_Streak1.Name = "numUpDown_Streak1";
             this.numUpDown_Streak1.Size = new System.Drawing.Size(120, 22);
-            this.numUpDown_Streak1.TabIndex = 1;
+            this.numUpDown_Streak1.TabIndex = 2;
             // 
             // numUpDown_TotalPoints1
             // 
@@ -136,7 +136,7 @@
             0});
             this.numUpDown_TotalPoints1.Name = "numUpDown_TotalPoints1";
             this.numUpDown_TotalPoints1.Size = new System.Drawing.Size(120, 22);
-            this.numUpDown_TotalPoints1.TabIndex = 0;
+            this.numUpDown_TotalPoints1.TabIndex = 2;
             // 
             // label3
             // 
