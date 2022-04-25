@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <link rel="stylesheet" href="css.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css.css') }}">
     <title>Fontys Bonus</title>
 </head>
 
@@ -12,7 +12,7 @@
         <a onclick="openReeks()" href="#">
         <div class="left-side">
             <div class="Punten">
-                <p class="points">53</p>
+                <p class="points">{{ puntenN }}</p>
                 <p class="pointsP">Punten</p>
             </div>
             <div class="streak">
@@ -70,25 +70,25 @@
                     Nu:
                 </div>
                 <div class ="streak-sub-menu-day1">
-                    16 Dagen (+3p)
+                    {{ streakN }} Dagen (+{{ puntenM}}p)
                 </div>
                 <div class ="streak-sub-menu-now">
-                    Over 4 dagen:
+                    Over {{ daysT }} dagen:
                 </div>
                 <div class ="streak-sub-menu-day1">
-                    20 Dagen (+4p)
+                    {{ streakT }} Dagen (+{{ puntenT }} punten)
                 </div>
             </div>
         </div>
         <div class="right-side">
             <div class="DealsTitel">
-                Deals
+                Aanbiedingen
             </div>
             <div class="itemsBox">
                 <a onclick="openDeal()" href="#">
                 <div class="itembox" id="item1">
                     <div class="itemPicture">
-                        <img src="images/koffie.png" height="90%" style="margin-left:15px">
+                        <img src="{{ url_for('static', filename='images/koffie.png') }}" height="90%" style="margin-left:15px">
                     </div>
                     <div class="itemTitle" id = "ItemTitle">
                         Luxe koffie</br>
@@ -110,19 +110,19 @@
                             Keuze uit:</br>
                             Alle beschikbare koffie's op te halen op locatie.
                         </div>
-                        <img src="images/index.png" style="width: 100px;float: left;" id="qr"></br>
+                        <img src="{{ url_for('static', filename='images/index.png') }}" style="width: 100px;float: left;" id="qr"></br>
                         <div class ="buybutton">
                             7 Punten
                         </div>
                         <div class = "closeicon">
-                            <img src="images/OOjs_UI_icon_close.svg.png" style="width:100px;">
+                            <img src="{{ url_for('static', filename='images/OOjs_UI_icon_close.svg.png') }}" style="width:100px;">
                         </div>
                     </div>
                 </div>
                 </a>
                 <div class="itembox" id="item2">
                     <div class="itemPicture">
-                        <img src="images/subway.png" width="130%" style="margin-top:55px; margin-left:-30px">
+                        <img src="{{ url_for('static', filename='images/subway.png') }}" width="130%" style="margin-top:55px; margin-left:-30px">
                     </div>
                     <div class="itemTitle">
                         20% Korting
@@ -133,7 +133,7 @@
                 </div>
                 <div class="itembox" id="item3">
                     <div class="itemPicture">
-                        <img src="images/appeltaart.png" width="100%" style="margin-top:0px; margin-left:5px">
+                        <img src="{{ url_for('static', filename='images/appeltaart.png') }}" width="100%" style="margin-top:0px; margin-left:5px">
                     </div>
                     <div class="itemTitle">
                         Appeltaart
@@ -144,7 +144,7 @@
                 </div>
                 <div class="itembox" id="item4">
                     <div class="itemPicture">
-                        <img src="images/donut.png" width="100%" style="margin-top:0px; margin-left:0px">
+                        <img src="{{ url_for('static', filename='/images/donut.png') }}" width="100%" style="margin-top:0px; margin-left:0px">
                     </div>
                     <div class="itemTitle">
                         Donut
