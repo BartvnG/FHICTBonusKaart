@@ -25,11 +25,19 @@ namespace FHICT_Bonus_kaart_froms_test
             t = new System.Threading.Thread(InterpretSerialInput);
             t.Start();
         }
-        static void LineChanger(string newText, string docPath, int lineToWrite)
+        static void LineChanger(string newText, string docPath, int index)
         {
             string[] arrLine = File.ReadAllLines(docPath);
-            arrLine[lineToWrite] = newText;
+            arrLine[index] = newText;
             File.WriteAllLines(docPath, arrLine);
+        }
+
+        static void LineReader(string docPath, int index, ref int[] streak, ref int[] punten)
+        {
+            string readLine = File.ReadAllLines(docPath)[index];
+            string[] lineArr = readLine.Split(' ');
+            streak[index] = Convert.ToInt32(lineArr[1]);
+            punten[index] = Convert.ToInt32(lineArr[2]);
         }
 
         public void InterpretSerialInput()
@@ -61,94 +69,59 @@ namespace FHICT_Bonus_kaart_froms_test
 
             while (true)
             {
-                for (int i = 0; i < streakNumUpDowns.Length; i++)
-                {
-                    streak[i] = Convert.ToInt32(streakNumUpDowns[i].Value);
-                    punten[i] = Convert.ToInt32(puntenNumUpDowns[i].Value);
-                }
+                //Read data form txt file into local streak and point data
+                //for (int i = 0; i < streakNumUpDowns.Length; i++)
+                //{
+                //    streak[i] = Convert.ToInt32(streakNumUpDowns[i].Value);
+                //    punten[i] = Convert.ToInt32(puntenNumUpDowns[i].Value);
+                //}
+                
 
                 serialInput = serialPort.ReadLine();
                 Console.WriteLine(serialInput);
-
-                if (serialInput == "#") 
-                { 
-                    communicationStarted = true; 
-                }
-
-                if (communicationStarted)
+                if (serialInput.StartsWith("#StartOfDay"))
                 {
-                    if (serialInput == "%")
+                    for (int i = 0; i < checkedIn.Length; i++)
                     {
-                        communicationStarted = false;
-                        checkInProtocol = false;
-                        dataIndex = 0;
-                        //Straf als je de vorige dag niet hebt ingecheckt
-                        if (startOfDayProtocol)
-                        {
-                            for (int i = 0; i < checkedIn.Length; i++)
-                            {
-                                if (!checkedIn[i]) { streak[i] = 0; }
-                                checkedIn[i] = false;
-                            }
-                            startOfDayProtocol = false;
-                        }
-                        else if (!checkedIn[cardIndex])
-                        {
-                            //Bereken punten
-                            //Reset streak if late
-                            if (!opTijd) 
-                            { 
-                                streak[cardIndex] = 0; 
-                            }
-                            else
-                            {
-                                streak[cardIndex]++;
-                                //Per 10 dagen een extra punt per dag
-                                punten[cardIndex] = streak[cardIndex] / 10 + 1;
-                            }
-                            //Register that the card has been checked in this day
-                            checkedIn[cardIndex] = true;
-                            //Stuur terug naar arduino
-                            serialPort.Write($"#CheckIn {naam[cardIndex]} {streak[cardIndex]} {punten[cardIndex]} %");
-                            LineChanger($"{naam[cardIndex]} {streak[cardIndex]} {punten[cardIndex]}", docPath, cardIndex);
-                        }
-                        //for (int i = 0; i < streakNumUpDowns.Length; i++)
-                        //{
-                        //    streakNumUpDowns[i].Invoke((MethodInvoker)delegate { streakNumUpDowns[i].Value = streak[i]; });
-                        //    puntenNumUpDowns[i].Invoke((MethodInvoker)delegate { puntenNumUpDowns[i].Value = punten[i]; });
-                        //}
+                        if (!checkedIn[i]) { streak[i] = 0; }
+                        checkedIn[i] = false;
                     }
-
-                    if (serialInput == "StartOfDay")
+                }
+                else if (serialInput.StartsWith("#CheckIn ") && serialInput.EndsWith("%\r"))
+                {
+                    for (int i = 0; i < checkedIn.Length; i++)
                     {
-                        startOfDayProtocol = true;
+                        LineReader(docPath, i, ref streak, ref punten);
                     }
-                    else if (serialInput == "CheckIn")
+                    string[] arrData = serialInput.Substring(9, serialInput.Length-11).Split('!');
+                    if (arrData[0] == "09 B9 64 C2")
                     {
-                        checkInProtocol = true;
+                        cardIndex = 0;
                     }
-                    else if (checkInProtocol)
+                    else if (arrData[0] == "CA 27 61 1F")
                     {
-                        switch (dataIndex)
-                        {
-                            case 0:
-                                if (serialInput.Substring(1) == "09 B9 64 C2")
-                                {
-                                    cardIndex = 1;
-                                }
-                                else if (serialInput.Substring(1) == "CA 27 61 1F")
-                                {
-                                    cardIndex = 0;
-                                }
-                                //To implement? non Fontys cards not recognised, show error on lcd
-                                break;
-                            case 1:
-                                opTijd = Convert.ToBoolean(Convert.ToInt32(serialInput));
-                                break;
-                            default:
-                                break;
+                        cardIndex = 1;
+                    }
+                    opTijd = Convert.ToBoolean(Convert.ToInt32(arrData[1]));
+                    if (!checkedIn[cardIndex])
+                    {
+                        //Bereken punten
+                        //Reset streak if late
+                        if (!opTijd) 
+                        { 
+                            streak[cardIndex] = 0; 
                         }
-                        dataIndex++;
+                        else
+                        {
+                            streak[cardIndex]++;
+                            //Per 10 dagen een extra punt per dag
+                            punten[cardIndex] += streak[cardIndex] / 10 + 1;
+                        }
+                        //Register that the card has been checked in this day
+                        checkedIn[cardIndex] = true;
+                        //Stuur terug naar arduino
+                        serialPort.Write($"#CheckIn {naam[cardIndex]} {streak[cardIndex]} {punten[cardIndex]} %");
+                        LineChanger($"{naam[cardIndex]} {streak[cardIndex]} {punten[cardIndex]}", docPath, cardIndex);
                     }
                 }
             }
