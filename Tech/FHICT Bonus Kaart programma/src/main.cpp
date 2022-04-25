@@ -36,7 +36,7 @@ void setup()
   SPI.begin();      // Initiate  SPI bus
   mfrc522.PCD_Init();   // Initiate MFRC522
   //Tell C# program that it is the start of the day
-  Serial.println("#\nStartOfDay\n%\n");
+  Serial.println("#StartOfDay");
   Serial.println("Approximate your card to the reader...");
   Serial.println();
   // set up the LCD's number of columns and rows:
@@ -170,7 +170,7 @@ void loop()
       Serial.println("Op tijd");
     }
     //Send data to the C# program
-    Serial.print("#\nCheckIn\n" + uid + "\n" + opTijd + "\n%\n");
+    Serial.println("#CheckIn" + uid + "!" + opTijd + "%");
     lastCardPresent = millis();
   }
 }

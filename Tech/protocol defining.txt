@@ -2,15 +2,11 @@ protocol from arduino to forms:
 
 #CheckIn 09 B9 64 C2 4 25 1 % //Spaces in uid, how to fix? 
 
-//Use '\n' to seperate data instead of space
-//This allows the forms app to use readline instead of readChar
-//The C# program holds all data, so no streak nor point information is sent
+//Use string.Split('!') to split the data into stuff
+//It will read a substring if the message starts with "#CheckIn "
+//This makes it possible to read the entire message at once
 // message would look like this:
-#\n
-CheckIn\n
-09 B9 64 C2\n
-1\n
-%
+#CheckIn 09 B9 64 C2!1%
 
 (Uid, opTijd(bool))
 
