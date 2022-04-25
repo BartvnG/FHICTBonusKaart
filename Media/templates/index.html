@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css.css') }}">
+    <title>Fontys Bonus</title>
+</head>
+
+<body>
+
+    <div class="container" id = "container">
+        <a onclick="openReeks()" href="#">
+        <div class="left-side">
+            <div class="Punten">
+                <p class="points">{{ puntenN }}</p>
+                <p class="pointsP">Punten</p>
+            </div>
+            <div class="streak">
+                Streak >
+            </div>
+            <div class="logs">
+                <p class="logsTitel">Geschiedenis</p>
+                <div class="logsTable">
+                    14/04 &nbsp; +1 p</br>
+                    13/04 &nbsp; +3 p</br>
+                    12/04 &nbsp; +1 p
+                </div>
+            </div>
+        </div>
+        </a>
+        <script>
+            function openReeks() {
+                var x = document.getElementById("streak-menu");
+                var y = document.getElementById("container");
+                var z = document.getElementById("streak-sub-menu");
+                if (x.style.display === "flex") {
+                    x.classList.add('streakL');
+                    x.classList.remove('streakS');
+                    
+                    y.classList.add('containerS');
+                    y.classList.remove('containerL');
+
+                    z.classList.add('streak-sub-menuL');
+                    z.classList.remove('streak-sub-menuS');
+
+                    setTimeout(() => { 
+                        x.style.display = "none";
+                        y.style.width = "1200px"; }, 1500);
+                } else {
+                    x.style.display = "flex";
+
+                    y.classList.add('containerL');
+                    y.classList.remove('containerS');
+                    x.classList.add('streakS');
+                    x.classList.remove('streakL');
+
+                    z.classList.add('streak-sub-menuS');
+                    z.classList.remove('streak-sub-menuL');
+
+                    y.style.width = "1700px";
+                }
+            } 
+        </script>
+        <div class="streak-menu" id = "streak-menu">
+            <div class ="streak-sub-menu" id="streak-sub-menu">
+                <div class ="streak-sub-menu-t">
+                    Streak
+                </div>
+                <div class ="streak-sub-menu-now">
+                    Nu:
+                </div>
+                <div class ="streak-sub-menu-day1">
+                    {{ streakN }} Dagen (+{{ puntenM}}p)
+                </div>
+                <div class ="streak-sub-menu-now">
+                    Over {{ daysT }} dagen:
+                </div>
+                <div class ="streak-sub-menu-day1">
+                    {{ streakT }} Dagen (+{{ puntenT }} punten)
+                </div>
+            </div>
+        </div>
+        <div class="right-side">
+            <div class="DealsTitel">
+                Aanbiedingen
+            </div>
+            <div class="itemsBox">
+                <a onclick="openDeal()" href="#">
+                <div class="itembox" id="item1">
+                    <div class="itemPicture">
+                        <img src="{{ url_for('static', filename='images/koffie.png') }}" height="90%" style="margin-left:15px">
+                    </div>
+                    <div class="itemTitle" id = "ItemTitle">
+                        Luxe koffie</br>
+                    </div>
+                    <div class="itemPoints" id = "ItemPoints">
+                        7 Punten
+                    </div>
+                    <div class = "BigInfo" id = "BigInfo">
+                        <div class = "BigInfoTitle">
+                            Luxe koffie
+                        </div>
+                        <div class = "BigInfoSub">
+                            P8 2de verdieping</br>
+                            8:30 - 16:30</br>
+                        </div>
+                    </div>
+                    <div class = "Sub" id = "Sub">
+                        <div class = "BigInfoBus">
+                            Keuze uit:</br>
+                            Alle beschikbare koffie's op te halen op locatie.
+                        </div>
+                        <img src="{{ url_for('static', filename='images/index.png') }}" style="width: 100px;float: left;" id="qr"></br>
+                        <div class ="buybutton">
+                            7 Punten
+                        </div>
+                        <div class = "closeicon">
+                            <img src="{{ url_for('static', filename='images/OOjs_UI_icon_close.svg.png') }}" style="width:100px;">
+                        </div>
+                    </div>
+                </div>
+                </a>
+                <div class="itembox" id="item2">
+                    <div class="itemPicture">
+                        <img src="{{ url_for('static', filename='images/subway.png') }}" width="130%" style="margin-top:55px; margin-left:-30px">
+                    </div>
+                    <div class="itemTitle">
+                        20% Korting
+                    </div>
+                    <div class="itemPoints">
+                        9 Punten
+                    </div>
+                </div>
+                <div class="itembox" id="item3">
+                    <div class="itemPicture">
+                        <img src="{{ url_for('static', filename='images/appeltaart.png') }}" width="100%" style="margin-top:0px; margin-left:5px">
+                    </div>
+                    <div class="itemTitle">
+                        Appeltaart
+                    </div>
+                    <div class="itemPoints">
+                        10 Punten
+                    </div>
+                </div>
+                <div class="itembox" id="item4">
+                    <div class="itemPicture">
+                        <img src="{{ url_for('static', filename='/images/donut.png') }}" width="100%" style="margin-top:0px; margin-left:0px">
+                    </div>
+                    <div class="itemTitle">
+                        Donut
+                    </div>
+                    <div class="itemPoints">
+                        3 Punten
+                    </div>
+                </div>
+            </div>
+            <script>
+                function openDeal() {
+                var g = document.getElementById("BigInfo")
+                var h = document.getElementById("ItemPoints");
+                var i = document.getElementById("ItemTitle");
+                var j = document.getElementById("Sub");
+                var v = document.getElementById("item1");
+                var x = document.getElementById("item2");
+                var y = document.getElementById("item3");
+                var z = document.getElementById("item4");
+                if (x.style.display === "none") {
+                    v.classList.add('itemboxS');
+                    v.classList.remove('itemboxL');
+                    g.style.display = "none";
+                    j.style.display = "none";
+                    setTimeout(() => { 
+                        h.style.display = "inline";
+                        i.style.display = "inline";
+                        x.style.display = "inline";
+                    y.style.display = "inline";
+                    z.style.display = "inline"; }, 500);
+                    v.style.fontSize = "20px";
+                    /*x.classList.add('streakL');
+                    x.classList.remove('streakS');
+                    
+                    y.classList.add('containerS');
+                    y.classList.remove('containerL');
+
+                    z.classList.add('streak-sub-menuL');
+                    z.classList.remove('streak-sub-menuS');
+
+                    setTimeout(() => { 
+                        x.style.display = "none";
+                        y.style.width = "1200px"; }, 1500);*/
+                } else {
+                    x.style.display = "none";
+                    y.style.display = "none";
+                    z.style.display = "none";
+                    h.style.display = "none";
+                    i.style.display = "none";
+                    
+                    setTimeout(() => { 
+                        g.style.display = "inline";
+                        j.style.display = "inline";
+                        }, 500);
+                    
+                    v.classList.add('itemboxL');
+                    v.classList.remove('itemboxS');
+                    v.style.fontSize ="35px";
+                }
+            } 
+            </script>
+            <div class="More">
+                Meer aanbiedingen ...
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

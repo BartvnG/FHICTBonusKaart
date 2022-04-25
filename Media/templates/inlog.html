@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css.css') }}">
+    <title>Fontys Bonus</title>
+</head>
+
+<body>
+
+    <div class="container" id = "container">
+        <div class = "inlogTitle">
+            Log in:
+        </div>
+        <form action="{{ url_for('index') }}", method='get'>
+            <input type="text" id="fname" name="name" value="naam"><br><br>
+            <input type="text" id="fname" name="pcn" value="PCN - Code"><br><br>
+            <input type="submit" id = "inlogbutton" value="INLOGGEN"> 
+          </form> 
+    </div>
+
+</body>
+
+</html>
