@@ -1,2 +1,2 @@
-Desmond 0 0
-Bart 0 0
+Desmond 4 7
+Bart 2 5

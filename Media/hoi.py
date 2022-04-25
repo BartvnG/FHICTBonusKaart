@@ -6,7 +6,7 @@ app = Flask(__name__)
 @app.route("/home/")
 def index():
     name = request.args["name"]
-    file = open('Media/test.txt')
+    file = open('Media/Data.txt')
     content = file.readlines()
 
     for i in range(len(content)):
