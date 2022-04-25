@@ -19,6 +19,7 @@ unsigned long lastCardPresent;
 String serialMessage = "";
 bool communicatieGestart = false;
 bool checkInProtocol = false;
+bool errorProtocol = false;
 const char  protocolStartChar = '#';
 const char  protocolEndChar  = '%';
 
@@ -36,7 +37,7 @@ void setup()
   SPI.begin();      // Initiate  SPI bus
   mfrc522.PCD_Init();   // Initiate MFRC522
   //Tell C# program that it is the start of the day
-  Serial.println("#StartOfDay");
+  Serial.println("#StartOfDay%");
   Serial.println("Approximate your card to the reader...");
   Serial.println();
   // set up the LCD's number of columns and rows:
@@ -58,11 +59,30 @@ void UpdateInterface(String name, bool opTijd, int streak, int punten) {
   lcd.print(name);
   lcd.setCursor(0,1);
   lcd.print("Str: " + String(streak) + " Pnt: " + punten);
-  if (opTijd) {
-    rgLedWrite(0, 150);
+  if (naam != " ") {
+    if (opTijd) {
+      rgLedWrite(0, 150);
+    }
+    else {
+      rgLedWrite(150, 0);
+    }
   }
-  else {
-    rgLedWrite(150, 0);
+}
+
+void HandleMessage(String serialMessage) {
+  if (checkInProtocol) {
+    UpdateInterface(naam, opTijd, streak, punten);
+    Serial.println("\nNaam: " + naam);
+    Serial.print("op tijd?: ");
+    Serial.println(opTijd);
+    Serial.print("Streak: ");
+    Serial.println(streak);
+    Serial.print("punten: ");
+    Serial.println(punten);
+    checkInProtocol = false;
+  }
+  if (serialMessage.startsWith("Print ")) {
+    lcd.print(serialMessage.substring(6));
   }
 }
 
@@ -103,19 +123,9 @@ void InterpretSerialInput() {
       if (readChar == protocolEndChar) {
         communicatieGestart = false;
         dataIndex = 0;
-        serialMessage = "";
         //Do stuff
-        if (checkInProtocol) {
-          UpdateInterface(naam, opTijd, streak, punten);
-          Serial.println("\nNaam: " + naam);
-          Serial.print("op tijd?: ");
-          Serial.println(opTijd);
-          Serial.print("Streak: ");
-          Serial.println(streak);
-          Serial.print("punten: ");
-          Serial.println(punten);
-          checkInProtocol = false;
-        }
+        HandleMessage(serialMessage);
+        serialMessage = "";
       }
       else {
         serialMessage += readChar;
@@ -129,7 +139,7 @@ void loop()
   InterpretSerialInput();
 
   //Card reading logic
-  if (millis() - lastCardPresent >= 5000) {
+  if (millis() - lastCardPresent >= 3000) {
     lcd.clear();
     rgLedWrite(0, 0);
     // Look for new cards
@@ -152,15 +162,7 @@ void loop()
       uid.concat(String(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " "));
       uid.concat(String(mfrc522.uid.uidByte[i], HEX));
     }
-    int index = 0;
     uid.toUpperCase();
-    if (uid.substring(1) == "09 B9 64 C2") {
-      index = 1;
-    }
-    else if (uid.substring(1) == "CA 27 61 1F") {
-      index = 0;
-    }
-    else { Serial.print("bruh"); }
     if (millis() / 1000 > 30) {
       opTijd = false;
       Serial.println("Laat");
