@@ -16,7 +16,7 @@ namespace FHICT_Bonus_kaart_froms_test
         Thread t;
         private void Form1_Load(object sender, EventArgs e)
         {
-            t = new System.Threading.Thread(InterpretSerialInput);
+            t = new Thread(InterpretSerialInput);
             t.Start();
         }
         static void LineChanger(string newText, string docPath, int index)
