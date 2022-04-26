@@ -19,6 +19,7 @@ namespace FHICT_Bonus_kaart_froms_test
             t = new Thread(InterpretSerialInput);
             t.Start();
         }
+
         static void LineChanger(string newText, string docPath, int index)
         {
             string[] arrLine = File.ReadAllLines(docPath);
@@ -32,7 +33,7 @@ namespace FHICT_Bonus_kaart_froms_test
             return arrLine[lineToRead];
         }
         
-        static void ReadDataIn(string docPath, int index, ref int[] streak, ref int[] punten, ref bool[] checkedIn)
+        static void ReadDataIn(string docPath, int index, int[] streak, int[] punten, bool[] checkedIn)
         {
             string readLine = LineReader(docPath, index - 1);
             string[] lineArr = readLine.Split(' ');
@@ -60,7 +61,7 @@ namespace FHICT_Bonus_kaart_froms_test
             //Read data from txt file into local streak and point data
             for (int i = 1; i < checkedIn.Length; i++)
             {
-                ReadDataIn(docPath, i, ref streak, ref punten, ref checkedIn);
+                ReadDataIn(docPath, i, streak, punten, checkedIn);
             }
 
             
