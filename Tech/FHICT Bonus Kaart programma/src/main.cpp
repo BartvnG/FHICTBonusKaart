@@ -41,7 +41,7 @@ void setup()
   Serial.println();
   // set up the LCD's number of columns and rows:
   lcd.begin(16, 2);
-  for (int i = 0; i < 3; i++) {
+  for (int i = 0; i < 2; i++) {
     pinMode(rgbPins[i], OUTPUT);
   }
   pinMode(LED_BUILTIN, OUTPUT);
