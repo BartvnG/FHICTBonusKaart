@@ -1,14 +1,8 @@
 ﻿using System;
 using System.IO;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using System.IO.Ports;
+using System.Threading;
+using System.Windows.Forms;
 
 namespace FHICT_Bonus_kaart_froms_test
 {
@@ -19,7 +13,7 @@ namespace FHICT_Bonus_kaart_froms_test
             InitializeComponent();
         }
 
-        System.Threading.Thread t;
+        Thread t;
         private void Form1_Load(object sender, EventArgs e)
         {
             t = new System.Threading.Thread(InterpretSerialInput);
@@ -31,15 +25,28 @@ namespace FHICT_Bonus_kaart_froms_test
             arrLine[index] = newText;
             File.WriteAllLines(docPath, arrLine);
         }
+
+        static string LineReader (string docPath, int lineToRead)
+        {
+            string[] arrLine = File.ReadAllLines(docPath);
+            return arrLine[lineToRead];
+        }
         
         static void ReadDataIn(string docPath, int index, ref int[] streak, ref int[] punten, ref bool[] checkedIn)
         {
-            string readLine = File.ReadAllLines(docPath)[index - 1];
+            string readLine = LineReader(docPath, index - 1);
             string[] lineArr = readLine.Split(' ');
             streak[index] = Convert.ToInt32(lineArr[1]);
             punten[index] = Convert.ToInt32(lineArr[2]);
             checkedIn[index] = Convert.ToBoolean(Convert.ToInt32(lineArr[3]));
         }
+
+        string[] naam = { "error", "Desmond", "Bart" };
+        int[] streak = { 0, 0, 0 };
+        int[] punten = { 0, 0, 0 };
+        bool[] checkedIn = { false, false, false };
+        // Set a variable to the data file path.
+        string docPath = @"C:\Fontys retry\Proftaak Design challenge\FHICT Bonus Kaart\FHICTBonusKaart\Media\Data.txt";
 
         public void InterpretSerialInput()
         {
@@ -49,13 +56,6 @@ namespace FHICT_Bonus_kaart_froms_test
                 PortName = "COM11"
             };
             serialPort.Open();
-
-            string[] naam = { "error", "Desmond", "Bart" };
-            int[] streak = { 0, 0, 0 };
-            int[] punten = { 0, 0, 0 };
-            bool[] checkedIn = { false, false, false };
-            // Set a variable to the data file path.
-            string docPath = @"C:\Fontys retry\Proftaak Design challenge\FHICT Bonus Kaart\FHICTBonusKaart\Media\Data.txt";
 
             //Read data from txt file into local streak and point data
             for (int i = 1; i < checkedIn.Length; i++)
@@ -121,6 +121,30 @@ namespace FHICT_Bonus_kaart_froms_test
                         serialPort.Write($"#CheckIn   {streak[cardIndex]} {punten[cardIndex]} %");
                     }
                 }
+            }
+        }
+
+        private void bttn_WriteToDB_Click(object sender, EventArgs e)
+        {
+            NumericUpDown[] streakNumUpDowns = { null, numUpDown_Streak0, numUpDown_Streak1 };
+            NumericUpDown[] puntenNumUpDowns = { null, numUpDown_TotalPoints0, numUpDown_TotalPoints1 };
+            RadioButton[] checkedInRbs = { null, rb_CheckedIn0, rb_CheckedIn1 };
+            Button bttn = (Button)sender;
+            int index = bttn.TabIndex;
+            if (bttn.Name.Contains("Read"))
+            {
+                string readLine = LineReader(docPath, index-1);
+                string[] lineArr = readLine.Split(' ');
+                streakNumUpDowns[index].Value = Convert.ToInt32(lineArr[1]);
+                puntenNumUpDowns[index].Value = Convert.ToInt32(lineArr[2]);
+                checkedInRbs[index].Checked = Convert.ToBoolean(Convert.ToInt32(lineArr[3]));
+            }
+            else
+            {
+                streak[index] = Convert.ToInt32(streakNumUpDowns[index].Value);
+                punten[index] = Convert.ToInt32(puntenNumUpDowns[index].Value);
+                checkedIn[index] = checkedInRbs[index].Checked;
+                LineChanger($"{naam[index]} {streak[index]} {punten[index]} {Convert.ToInt32(checkedIn[index])}", docPath, index - 1);
             }
         }
     }
