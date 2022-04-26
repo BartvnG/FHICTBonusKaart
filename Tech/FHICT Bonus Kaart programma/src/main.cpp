@@ -2,10 +2,9 @@
 #include <SPI.h>
 #include <MFRC522.h>
  
-#define rPin A0
-#define gPin A1
-#define bPin A2
-int rgbPins[3] = { rPin, gPin, bPin };
+#define gPin A0
+#define rPin A1
+int rgbPins[2] = { rPin, gPin };
 
 #define SS_PIN 10
 #define RST_PIN 9
