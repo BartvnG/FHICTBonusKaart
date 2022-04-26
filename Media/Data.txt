@@ -1,2 +1,2 @@
 Desmond 5 3 0
-Bart 15 5 0
+Bart 6 5 0
